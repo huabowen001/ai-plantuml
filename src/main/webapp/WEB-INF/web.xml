@@ -229,6 +229,55 @@
     <url-pattern>/metadata/*</url-pattern>
   </servlet-mapping>
 
+  <!-- AI PlantUML Servlets -->
+  <servlet>
+    <servlet-name>aihomeservlet</servlet-name>
+    <servlet-class>net.sourceforge.plantuml.servlet.AIHomeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>aihomeservlet</servlet-name>
+    <url-pattern>/ai</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>authservlet</servlet-name>
+    <servlet-class>net.sourceforge.plantuml.servlet.AuthServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>authservlet</servlet-name>
+    <url-pattern>/api/auth/register</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>authservlet</servlet-name>
+    <url-pattern>/api/auth/login</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>aiconvertservlet</servlet-name>
+    <servlet-class>net.sourceforge.plantuml.servlet.AIConvertServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>aiconvertservlet</servlet-name>
+    <url-pattern>/api/ai/convert</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>aiconvertservlet</servlet-name>
+    <url-pattern>/api/ai/optimize</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>diagramhistoryservlet</servlet-name>
+    <servlet-class>net.sourceforge.plantuml.servlet.DiagramHistoryServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>diagramhistoryservlet</servlet-name>
+    <url-pattern>/api/history</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>diagramhistoryservlet</servlet-name>
+    <url-pattern>/api/history/*</url-pattern>
+  </servlet-mapping>
+
   <!-- ========================================================== -->
   <!-- Error Handler -->
   <!-- ========================================================== -->
