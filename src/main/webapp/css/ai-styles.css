@@ -1766,6 +1766,762 @@ textarea:focus-visible {
     transform: translateX(8px);
 }
 
+/* 保存版本模态框 */
+.save-version-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+.save-version-modal-content {
+    background: var(--bg-medium);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 245, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.save-version-modal-content::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--primary-color));
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.save-version-modal-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(0, 245, 255, 0.05), rgba(123, 47, 247, 0.05));
+}
+
+.save-version-modal-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.save-version-modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-size: 18px;
+}
+
+.save-version-modal-close:hover {
+    background: var(--bg-light);
+    color: var(--text-light);
+    transform: rotate(90deg);
+}
+
+.save-version-modal-body {
+    padding: 20px;
+}
+
+.save-version-modal-body .form-group {
+    margin-bottom: 15px;
+}
+
+.save-version-modal-body .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-light);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.save-version-modal-body .form-group textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    background: var(--bg-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-light);
+    font-family: 'Segoe UI', 'Microsoft YaHei', Arial, sans-serif;
+    font-size: 14px;
+    resize: vertical;
+    transition: all 0.3s ease;
+}
+
+.save-version-modal-body .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 245, 255, 0.1);
+    background: rgba(30, 36, 66, 0.8);
+}
+
+.save-version-modal-body .form-group textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.version-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(0, 245, 255, 0.05);
+    border: 1px solid rgba(0, 245, 255, 0.2);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.version-info i {
+    color: var(--primary-color);
+    font-size: 16px;
+    margin-top: 2px;
+}
+
+.save-version-modal-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    background: rgba(10, 14, 39, 0.5);
+}
+
+/* 取消按钮 */
+.save-version-modal-footer .btn-cancel {
+    flex: 1;
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.save-version-modal-footer .btn-cancel:hover {
+    background: var(--bg-light);
+    border-color: var(--text-muted);
+    color: var(--text-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.save-version-modal-footer .btn-cancel:active {
+    transform: translateY(0);
+}
+
+/* 保存按钮 */
+.save-version-modal-footer .btn-save {
+    flex: 1;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 245, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.save-version-modal-footer .btn-save::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.save-version-modal-footer .btn-save:hover::before {
+    left: 100%;
+}
+
+.save-version-modal-footer .btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 245, 255, 0.5), 0 0 30px rgba(123, 47, 247, 0.3);
+}
+
+.save-version-modal-footer .btn-save:active {
+    transform: translateY(0);
+}
+
+/* 删除确认对话框 */
+.delete-confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+.delete-confirm-modal-content {
+    background: var(--bg-medium);
+    border: 1px solid rgba(255, 71, 87, 0.3);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 71, 87, 0.2);
+    display: flex;
+    flex-direction: column;
+    animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes scaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.delete-confirm-modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--error-color), var(--warning-color), var(--error-color));
+    background-size: 200% 100%;
+    animation: warningPulse 3s ease-in-out infinite;
+}
+
+@keyframes warningPulse {
+    0%, 100% {
+        background-position: 0% 50%;
+        opacity: 1;
+    }
+    50% {
+        background-position: 100% 50%;
+        opacity: 0.8;
+    }
+}
+
+.delete-confirm-modal-header {
+    padding: 30px 30px 20px 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.delete-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 165, 2, 0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 15px rgba(255, 71, 87, 0);
+    }
+}
+
+.delete-icon-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid var(--error-color);
+    opacity: 0.3;
+}
+
+.delete-icon-wrapper i {
+    font-size: 40px;
+    color: var(--error-color);
+    animation: iconShake 1s ease-in-out infinite;
+}
+
+@keyframes iconShake {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-5deg);
+    }
+    75% {
+        transform: rotate(5deg);
+    }
+}
+
+.delete-confirm-modal-body {
+    padding: 0 30px 30px 30px;
+    text-align: center;
+}
+
+.delete-confirm-modal-body h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 12px;
+}
+
+.delete-confirm-modal-body > p {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.delete-item-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(255, 71, 87, 0.1);
+    border: 1px solid rgba(255, 71, 87, 0.2);
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.delete-item-info i {
+    color: var(--error-color);
+    font-size: 16px;
+}
+
+.delete-item-info span {
+    color: var(--text-light);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.delete-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 165, 2, 0.1);
+    border: 1px solid rgba(255, 165, 2, 0.2);
+    border-radius: 8px;
+    text-align: left;
+}
+
+.delete-warning i {
+    color: var(--warning-color);
+    font-size: 16px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.delete-warning span {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.delete-confirm-modal-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    background: rgba(10, 14, 39, 0.5);
+}
+
+/* 删除对话框的取消按钮 */
+.delete-confirm-modal-footer .btn-cancel {
+    flex: 1;
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.delete-confirm-modal-footer .btn-cancel:hover {
+    background: var(--bg-light);
+    border-color: var(--text-muted);
+    color: var(--text-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.delete-confirm-modal-footer .btn-cancel:active {
+    transform: translateY(0);
+}
+
+/* 删除对话框的删除按钮 */
+.delete-confirm-modal-footer .btn-delete {
+    flex: 1;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--error-color), #ff1744);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.delete-confirm-modal-footer .btn-delete::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.delete-confirm-modal-footer .btn-delete:hover::before {
+    left: 100%;
+}
+
+.delete-confirm-modal-footer .btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5), 0 0 30px rgba(255, 71, 87, 0.3);
+    background: linear-gradient(135deg, #ff1744, var(--error-color));
+}
+
+.delete-confirm-modal-footer .btn-delete:active {
+    transform: translateY(0);
+}
+
+/* 恢复版本确认对话框 */
+.restore-confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+.restore-confirm-modal-content {
+    background: var(--bg-medium);
+    border: 1px solid rgba(0, 245, 255, 0.3);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 245, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.restore-confirm-modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--primary-color));
+    background-size: 200% 100%;
+    animation: infoPulse 3s ease-in-out infinite;
+}
+
+@keyframes infoPulse {
+    0%, 100% {
+        background-position: 0% 50%;
+        opacity: 1;
+    }
+    50% {
+        background-position: 100% 50%;
+        opacity: 0.8;
+    }
+}
+
+.restore-confirm-modal-header {
+    padding: 30px 30px 20px 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.restore-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(123, 47, 247, 0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: restoreIconPulse 2s ease-in-out infinite;
+}
+
+@keyframes restoreIconPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(0, 245, 255, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 15px rgba(0, 245, 255, 0);
+    }
+}
+
+.restore-icon-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    opacity: 0.3;
+}
+
+.restore-icon-wrapper i {
+    font-size: 40px;
+    color: var(--primary-color);
+    animation: restoreIconRotate 2s ease-in-out infinite;
+}
+
+@keyframes restoreIconRotate {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-15deg);
+    }
+    75% {
+        transform: rotate(15deg);
+    }
+}
+
+.restore-confirm-modal-body {
+    padding: 0 30px 30px 30px;
+    text-align: center;
+}
+
+.restore-confirm-modal-body h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 12px;
+}
+
+.restore-confirm-modal-body > p {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.restore-item-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(0, 245, 255, 0.1);
+    border: 1px solid rgba(0, 245, 255, 0.2);
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.restore-item-info i {
+    color: var(--primary-color);
+    font-size: 16px;
+}
+
+.restore-item-info span {
+    color: var(--text-light);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.restore-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 165, 2, 0.1);
+    border: 1px solid rgba(255, 165, 2, 0.2);
+    border-radius: 8px;
+    text-align: left;
+}
+
+.restore-warning i {
+    color: var(--warning-color);
+    font-size: 16px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.restore-warning span {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.restore-confirm-modal-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    background: rgba(10, 14, 39, 0.5);
+}
+
+/* 恢复对话框的取消按钮 */
+.restore-confirm-modal-footer .btn-cancel {
+    flex: 1;
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.restore-confirm-modal-footer .btn-cancel:hover {
+    background: var(--bg-light);
+    border-color: var(--text-muted);
+    color: var(--text-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.restore-confirm-modal-footer .btn-cancel:active {
+    transform: translateY(0);
+}
+
+/* 恢复对话框的恢复按钮 */
+.restore-confirm-modal-footer .btn-restore {
+    flex: 1;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 245, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.restore-confirm-modal-footer .btn-restore::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.restore-confirm-modal-footer .btn-restore:hover::before {
+    left: 100%;
+}
+
+.restore-confirm-modal-footer .btn-restore:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 245, 255, 0.5), 0 0 30px rgba(123, 47, 247, 0.3);
+}
+
+.restore-confirm-modal-footer .btn-restore:active {
+    transform: translateY(0);
+}
+
 /* 响应式优化 */
 @media (max-width: 768px) {
     .fullscreen-header {
@@ -1794,6 +2550,118 @@ textarea:focus-visible {
     
     .modal-content {
         padding: 30px 20px;
+    }
+    
+    .save-version-modal-content {
+        width: 95%;
+        max-width: none;
+    }
+    
+    .save-version-modal-footer {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    .save-version-modal-footer .btn-cancel,
+    .save-version-modal-footer .btn-save {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 16px;
+    }
+    
+    /* 移动端按钮顺序：保存在上，取消在下 */
+    .save-version-modal-footer {
+        flex-direction: column-reverse;
+    }
+    
+    /* 删除确认对话框移动端优化 */
+    .delete-confirm-modal-content {
+        width: 95%;
+        max-width: none;
+        border-radius: 12px;
+    }
+    
+    .delete-icon-wrapper {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .delete-icon-wrapper i {
+        font-size: 36px;
+    }
+    
+    .delete-confirm-modal-header {
+        padding: 25px 20px 15px 20px;
+    }
+    
+    .delete-confirm-modal-body {
+        padding: 0 20px 25px 20px;
+    }
+    
+    .delete-confirm-modal-body h3 {
+        font-size: 20px;
+    }
+    
+    .delete-confirm-modal-footer {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    .delete-confirm-modal-footer .btn-cancel,
+    .delete-confirm-modal-footer .btn-delete {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 16px;
+    }
+    
+    /* 移动端删除按钮顺序：删除在上，取消在下 */
+    .delete-confirm-modal-footer {
+        flex-direction: column-reverse;
+    }
+    
+    /* 恢复确认对话框移动端优化 */
+    .restore-confirm-modal-content {
+        width: 95%;
+        max-width: none;
+        border-radius: 12px;
+    }
+    
+    .restore-icon-wrapper {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .restore-icon-wrapper i {
+        font-size: 36px;
+    }
+    
+    .restore-confirm-modal-header {
+        padding: 25px 20px 15px 20px;
+    }
+    
+    .restore-confirm-modal-body {
+        padding: 0 20px 25px 20px;
+    }
+    
+    .restore-confirm-modal-body h3 {
+        font-size: 20px;
+    }
+    
+    .restore-confirm-modal-footer {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    .restore-confirm-modal-footer .btn-cancel,
+    .restore-confirm-modal-footer .btn-restore {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 16px;
+    }
+    
+    /* 移动端恢复按钮顺序：恢复在上，取消在下 */
+    .restore-confirm-modal-footer {
+        flex-direction: column-reverse;
     }
 }
 

@@ -150,6 +150,9 @@
                             <button class="btn-icon" id="fullscreenBtn" onclick="openFullscreenPreview()" title="全屏预览" style="display: none;">
                                 <i class="fas fa-expand"></i>
                             </button>
+                            <button class="btn-icon" id="saveVersionBtn" onclick="showSaveVersionDialog()" title="保存版本" style="display: none;">
+                                <i class="fas fa-save"></i>
+                            </button>
                             <button class="btn-icon" id="versionBtn" onclick="viewVersionHistory(currentHistoryId)" title="查看版本历史" style="display: none;">
                                 <i class="fas fa-code-branch"></i>
                             </button>

@@ -319,15 +319,12 @@ async function optimizeDiagram() {
             
             console.log('代码已更新:', data.plantumlCode.substring(0, 100) + '...');
             
-            // 保存优化后的代码到历史记录（使用优化指令作为版本描述）
+            // 注意：已改为手动保存版本
+            // 如果没有历史记录ID但开启了保存选项，创建新的历史记录
             const saveHistory = document.getElementById('saveHistory').checked;
-            const versionDescription = '优化：' + instruction;
-            if (currentHistoryId) {
-                // 更新现有历史记录
-                await updateHistoryRecord(currentHistoryId, data.plantumlCode, versionDescription);
-            } else if (saveHistory) {
-                // 创建新的历史记录
-                await saveOptimizedToHistory(data.plantumlCode, versionDescription);
+            if (!currentHistoryId && saveHistory) {
+                // 创建新的历史记录（不创建版本）
+                await saveOptimizedToHistory(data.plantumlCode, '优化：' + instruction);
             }
             
             // 清空优化指令
@@ -376,6 +373,105 @@ async function updateHistoryRecord(historyId, plantumlCode, versionDescription) 
     }
 }
 
+// 显示保存版本对话框
+function showSaveVersionDialog() {
+    if (!currentHistoryId) {
+        showToast('请先生成图表并保存到历史记录', 'error');
+        return;
+    }
+    
+    const plantumlCode = document.getElementById('plantumlCode').value.trim();
+    if (!plantumlCode) {
+        showToast('没有可保存的代码', 'error');
+        return;
+    }
+    
+    const modal = document.createElement('div');
+    modal.className = 'save-version-modal';
+    modal.innerHTML = `
+        <div class="save-version-modal-content">
+            <div class="save-version-modal-header">
+                <h3><i class="fas fa-save"></i> 保存版本</h3>
+                <button class="save-version-modal-close" onclick="this.closest('.save-version-modal').remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="save-version-modal-body">
+                <div class="form-group">
+                    <label>版本描述</label>
+                    <textarea id="versionDescriptionInput" placeholder="请输入此版本的变更描述...&#10;&#10;例如：&#10;- 添加了用户认证流程&#10;- 优化了类关系结构&#10;- 修复了布局问题" rows="4"></textarea>
+                </div>
+                <div class="version-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span>系统将保持最近20个版本，旧版本将自动清理</span>
+                </div>
+            </div>
+            <div class="save-version-modal-footer">
+                <button class="btn-cancel" onclick="this.closest('.save-version-modal').remove()">
+                    <i class="fas fa-times"></i> 取消
+                </button>
+                <button class="btn-save" onclick="saveVersion()">
+                    <i class="fas fa-check"></i> 保存版本
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // 点击背景关闭
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    // 聚焦到输入框
+    setTimeout(() => {
+        document.getElementById('versionDescriptionInput').focus();
+    }, 100);
+}
+
+// 保存版本
+async function saveVersion() {
+    const description = document.getElementById('versionDescriptionInput').value.trim();
+    
+    if (!description) {
+        showToast('请输入版本描述', 'error');
+        return;
+    }
+    
+    const plantumlCode = document.getElementById('plantumlCode').value.trim();
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/history/${currentHistoryId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${currentToken}`
+            },
+            body: JSON.stringify({
+                plantumlCode: plantumlCode,
+                title: document.getElementById('diagramTitle').value.trim() || '未命名图表',
+                changeDescription: description
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('版本已保存', 'success');
+            // 关闭对话框
+            document.querySelector('.save-version-modal')?.remove();
+        } else {
+            showToast(data.message || '保存失败', 'error');
+        }
+    } catch (error) {
+        showToast('网络错误，请稍后再试', 'error');
+        console.error('Save version error:', error);
+    }
+}
+
 // 查看历史记录的版本列表
 async function viewVersionHistory(historyId) {
     try {
@@ -417,15 +513,18 @@ function showVersionModal(versions, historyId) {
             </div>
             <div class="version-modal-body">
                         <div class="version-list">
-                            ${versions.map(v => `
-                                <div class="version-item" onclick="restoreVersion(${v.id}, ${historyId})">
+                            ${versions.map(v => {
+                                const versionTitle = escapeHtml(v.title || '版本 ' + v.versionNumber);
+                                return `
+                                <div class="version-item" onclick="restoreVersion(${v.id}, ${historyId}, '${versionTitle.replace(/'/g, "\\'")}')">
                                     <div class="version-item-header">
-                                        <span class="version-number">${escapeHtml(v.title || '版本 ' + v.versionNumber)}</span>
+                                        <span class="version-number">${versionTitle}</span>
                                         <span class="version-date">${formatDate(v.createdAt)}</span>
                                     </div>
                                     ${v.changeDescription ? `<div class="version-item-desc">${escapeHtml(v.changeDescription)}</div>` : ''}
                                 </div>
-                            `).join('')}
+                                `;
+                            }).join('')}
                         </div>
             </div>
             <div class="version-modal-footer">
@@ -444,11 +543,68 @@ function showVersionModal(versions, historyId) {
     });
 }
 
+// 显示恢复版本确认对话框
+function showRestoreConfirmDialog(versionId, historyId, versionTitle) {
+    const modal = document.createElement('div');
+    modal.className = 'restore-confirm-modal';
+    modal.innerHTML = `
+        <div class="restore-confirm-modal-content">
+            <div class="restore-confirm-modal-header">
+                <div class="restore-icon-wrapper">
+                    <i class="fas fa-history"></i>
+                </div>
+            </div>
+            <div class="restore-confirm-modal-body">
+                <h3>确认恢复版本</h3>
+                <p>您确定要恢复到此版本吗？</p>
+                <div class="restore-item-info">
+                    <i class="fas fa-code-branch"></i>
+                    <span>${versionTitle}</span>
+                </div>
+                <div class="restore-warning">
+                    <i class="fas fa-info-circle"></i>
+                    <span>当前未保存的修改将会丢失，恢复后代码编辑器将被替换为选定版本的内容</span>
+                </div>
+            </div>
+            <div class="restore-confirm-modal-footer">
+                <button class="btn-cancel" onclick="this.closest('.restore-confirm-modal').remove()">
+                    <i class="fas fa-times"></i> 取消
+                </button>
+                <button class="btn-restore" onclick="confirmRestoreVersion(${versionId}, ${historyId}, '${versionTitle.replace(/'/g, "\\'")}')">
+                    <i class="fas fa-undo"></i> 恢复版本
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // 点击背景关闭
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    // ESC键关闭
+    const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', handleEsc);
+        }
+    };
+    document.addEventListener('keydown', handleEsc);
+}
+
 // 恢复到指定版本
-async function restoreVersion(versionId, historyId) {
-    if (!confirm('确定要恢复到此版本吗？当前未保存的修改将会丢失。')) {
-        return;
-    }
+async function restoreVersion(versionId, historyId, versionTitle) {
+    showRestoreConfirmDialog(versionId, historyId, versionTitle);
+}
+
+// 确认恢复版本
+async function confirmRestoreVersion(versionId, historyId, versionTitle) {
+    // 关闭确认对话框
+    document.querySelector('.restore-confirm-modal')?.remove();
     
     try {
         const response = await fetch(`${API_BASE_URL}/history/${historyId}/versions/${versionId}`, {
@@ -464,16 +620,13 @@ async function restoreVersion(versionId, historyId) {
             // 更新编辑器
             document.getElementById('plantumlCode').value = version.plantumlCode;
             
-            // 关闭模态框
+            // 关闭版本历史模态框
             document.querySelector('.version-modal')?.remove();
             
             // 刷新预览
             refreshPreview();
             
-            showToast('已恢复到：' + (version.title || '版本 ' + version.versionNumber), 'success');
-            
-            // 自动保存为新版本
-            await updateHistoryRecord(historyId, version.plantumlCode, '恢复版本：' + (version.title || '版本 ' + version.versionNumber));
+            showToast('已恢复到：' + versionTitle, 'success');
         } else {
             showToast(data.message || '恢复失败', 'error');
         }
@@ -572,6 +725,7 @@ function clearInput() {
     // 隐藏收藏和版本按钮
     document.getElementById('favoriteBtn').style.display = 'none';
     document.getElementById('versionBtn').style.display = 'none';
+    document.getElementById('saveVersionBtn').style.display = 'none';
 }
 
 // 复制代码
@@ -714,7 +868,7 @@ async function displayHistoryList(histories) {
                             <button onclick="event.stopPropagation(); toggleFavorite(${history.id}, ${!isFavorite})" title="${isFavorite ? '取消收藏' : '收藏'}">
                                 <i class="${isFavorite ? 'fas' : 'far'} fa-star"></i>
                             </button>
-                            <button onclick="event.stopPropagation(); deleteHistory(${history.id})" title="删除">
+                            <button onclick="event.stopPropagation(); deleteHistory(${history.id}, '${title.replace(/'/g, "\\'")}' )" title="删除">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -927,14 +1081,16 @@ async function toggleCurrentFavorite() {
 function updateFavoriteButton() {
     const favoriteBtn = document.getElementById('favoriteBtn');
     const versionBtn = document.getElementById('versionBtn');
+    const saveVersionBtn = document.getElementById('saveVersionBtn');
     const icon = favoriteBtn.querySelector('i');
     
     // 显示按钮
     favoriteBtn.style.display = '';
     
-    // 如果有历史记录ID，显示版本按钮
+    // 如果有历史记录ID，显示版本相关按钮
     if (currentHistoryId) {
         versionBtn.style.display = '';
+        saveVersionBtn.style.display = '';
     }
     
     // 更新图标和提示
@@ -947,11 +1103,68 @@ function updateFavoriteButton() {
     }
 }
 
+// 显示删除确认对话框
+function showDeleteConfirmDialog(id, title) {
+    const modal = document.createElement('div');
+    modal.className = 'delete-confirm-modal';
+    modal.innerHTML = `
+        <div class="delete-confirm-modal-content">
+            <div class="delete-confirm-modal-header">
+                <div class="delete-icon-wrapper">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+            <div class="delete-confirm-modal-body">
+                <h3>确认删除</h3>
+                <p>您确定要删除这条记录吗？</p>
+                ${title ? `<div class="delete-item-info">
+                    <i class="fas fa-file-alt"></i>
+                    <span>${escapeHtml(title)}</span>
+                </div>` : ''}
+                <div class="delete-warning">
+                    <i class="fas fa-info-circle"></i>
+                    <span>此操作不可恢复，记录及其所有版本都将被永久删除</span>
+                </div>
+            </div>
+            <div class="delete-confirm-modal-footer">
+                <button class="btn-cancel" onclick="this.closest('.delete-confirm-modal').remove()">
+                    <i class="fas fa-times"></i> 取消
+                </button>
+                <button class="btn-delete" onclick="confirmDeleteHistory(${id})">
+                    <i class="fas fa-trash-alt"></i> 确认删除
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // 点击背景关闭
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    // ESC键关闭
+    const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', handleEsc);
+        }
+    };
+    document.addEventListener('keydown', handleEsc);
+}
+
 // 删除历史记录
-async function deleteHistory(id) {
-    if (!confirm('确定要删除这条记录吗？')) {
-        return;
-    }
+async function deleteHistory(id, title) {
+    showDeleteConfirmDialog(id, title);
+}
+
+// 确认删除历史记录
+async function confirmDeleteHistory(id) {
+    // 关闭确认对话框
+    document.querySelector('.delete-confirm-modal')?.remove();
     
     try {
         const response = await fetch(`${API_BASE_URL}/history/${id}`, {
