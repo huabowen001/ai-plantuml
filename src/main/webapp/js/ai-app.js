@@ -538,6 +538,14 @@ async function refreshPreview() {
             const encoded = await response.text();
             const imageUrl = `${window.location.origin}/plantuml/svg/${encoded}`;
             previewContainer.innerHTML = `<img src="${imageUrl}" alt="PlantUML Diagram" onerror="handlePreviewError()">`;
+            
+            // 显示全屏按钮
+            setTimeout(() => {
+                const fullscreenBtn = document.getElementById('fullscreenBtn');
+                if (fullscreenBtn && previewContainer.querySelector('img')) {
+                    fullscreenBtn.style.display = 'inline-flex';
+                }
+            }, 100);
         } else {
             handlePreviewError();
         }
@@ -1087,4 +1095,131 @@ function formatDate(dateString) {
         return date.toLocaleDateString('zh-CN');
     }
 }
+
+// ========== 全屏预览功能 ==========
+let currentZoom = 1;
+let isDragging = false;
+let startX = 0;
+let startY = 0;
+let scrollLeft = 0;
+let scrollTop = 0;
+
+// 打开全屏预览
+function openFullscreenPreview() {
+    const previewContainer = document.getElementById('previewContainer');
+    const img = previewContainer.querySelector('img');
+    
+    if (!img) {
+        showToast('没有可预览的图片', 'warning');
+        return;
+    }
+    
+    const fullscreenModal = document.getElementById('fullscreenPreviewModal');
+    const fullscreenContainer = document.getElementById('fullscreenPreviewContainer');
+    
+    // 克隆图片到全屏容器
+    const clonedImg = img.cloneNode(true);
+    clonedImg.style.transform = 'scale(1)';
+    currentZoom = 1;
+    
+    fullscreenContainer.innerHTML = '';
+    fullscreenContainer.appendChild(clonedImg);
+    
+    // 显示模态框
+    fullscreenModal.style.display = 'flex';
+    
+    // 添加拖拽功能
+    setupImageDrag(fullscreenContainer);
+    
+    // ESC键关闭
+    document.addEventListener('keydown', handleEscKey);
+}
+
+// 关闭全屏预览
+function closeFullscreenPreview() {
+    const fullscreenModal = document.getElementById('fullscreenPreviewModal');
+    fullscreenModal.style.display = 'none';
+    currentZoom = 1;
+    document.removeEventListener('keydown', handleEscKey);
+}
+
+// ESC键处理
+function handleEscKey(e) {
+    if (e.key === 'Escape') {
+        closeFullscreenPreview();
+    }
+}
+
+// 缩放预览
+function zoomPreview(action) {
+    const fullscreenContainer = document.getElementById('fullscreenPreviewContainer');
+    const img = fullscreenContainer.querySelector('img');
+    
+    if (!img) return;
+    
+    if (action === 'in') {
+        currentZoom = Math.min(currentZoom + 0.2, 5);
+    } else if (action === 'out') {
+        currentZoom = Math.max(currentZoom - 0.2, 0.5);
+    } else if (action === 'reset') {
+        currentZoom = 1;
+    }
+    
+    img.style.transform = `scale(${currentZoom})`;
+    img.classList.toggle('zoomed', currentZoom > 1);
+}
+
+// 设置图片拖拽
+function setupImageDrag(container) {
+    container.addEventListener('mousedown', (e) => {
+        if (e.target.tagName === 'IMG' && currentZoom > 1) {
+            isDragging = true;
+            startX = e.pageX - container.offsetLeft;
+            startY = e.pageY - container.offsetTop;
+            scrollLeft = container.scrollLeft;
+            scrollTop = container.scrollTop;
+            container.style.cursor = 'grabbing';
+            e.preventDefault();
+        }
+    });
+    
+    container.addEventListener('mouseleave', () => {
+        isDragging = false;
+        container.style.cursor = 'default';
+    });
+    
+    container.addEventListener('mouseup', () => {
+        isDragging = false;
+        const img = container.querySelector('img');
+        if (img && currentZoom > 1) {
+            container.style.cursor = 'grab';
+        } else {
+            container.style.cursor = 'default';
+        }
+    });
+    
+    container.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - container.offsetLeft;
+        const y = e.pageY - container.offsetTop;
+        const walkX = (x - startX) * 2;
+        const walkY = (y - startY) * 2;
+        container.scrollLeft = scrollLeft - walkX;
+        container.scrollTop = scrollTop - walkY;
+    });
+    
+    // 滚轮缩放
+    container.addEventListener('wheel', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomPreview('in');
+            } else {
+                zoomPreview('out');
+            }
+        }
+    }, { passive: false });
+}
+
 

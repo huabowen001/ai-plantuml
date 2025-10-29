@@ -147,6 +147,9 @@
                     <div class="panel-header">
                         <h3><i class="fas fa-image"></i> 预览</h3>
                         <div class="panel-actions">
+                            <button class="btn-icon" id="fullscreenBtn" onclick="openFullscreenPreview()" title="全屏预览" style="display: none;">
+                                <i class="fas fa-expand"></i>
+                            </button>
                             <button class="btn-icon" id="versionBtn" onclick="viewVersionHistory(currentHistoryId)" title="查看版本历史" style="display: none;">
                                 <i class="fas fa-code-branch"></i>
                             </button>
@@ -203,6 +206,38 @@
             </div>
             <div id="favoritesList" class="history-grid">
                 <!-- 收藏记录将动态加载到这里 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 全屏预览模态框 -->
+    <div id="fullscreenPreviewModal" class="fullscreen-modal" style="display: none;">
+        <div class="fullscreen-header">
+            <h3><i class="fas fa-image"></i> 全屏预览</h3>
+            <div class="fullscreen-actions">
+                <button class="btn-icon" onclick="zoomPreview('in')" title="放大">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="btn-icon" onclick="zoomPreview('out')" title="缩小">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <button class="btn-icon" onclick="zoomPreview('reset')" title="重置">
+                    <i class="fas fa-undo"></i>
+                </button>
+                <button class="btn-icon" onclick="downloadImage('png')" title="下载PNG">
+                    <i class="fas fa-file-image"></i> PNG
+                </button>
+                <button class="btn-icon" onclick="downloadImage('svg')" title="下载SVG">
+                    <i class="fas fa-file-code"></i> SVG
+                </button>
+                <button class="btn-icon" onclick="closeFullscreenPreview()" title="关闭">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="fullscreen-body">
+            <div id="fullscreenPreviewContainer" class="fullscreen-preview-container">
+                <!-- 图片将在这里显示 -->
             </div>
         </div>
     </div>
