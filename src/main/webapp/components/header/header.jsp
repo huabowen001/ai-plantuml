@@ -5,4 +5,5 @@
 <% if (showGithubRibbon) { %>
   <%@ include file="/components/header/github-ribbon.jsp" %>
 <% } %>
+<%@ include file="/components/header/donate-button.jsp" %>
 <p>Create your <a href="https://plantuml.com">PlantUML</a> diagrams directly in your browser!</p>

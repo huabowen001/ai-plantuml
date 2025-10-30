@@ -1,0 +1,123 @@
+/****************
+* Donate Modal CSS *
+*****************/
+
+.donate-modal {
+  max-width: 35rem !important;
+}
+
+/* 打赏弹窗特殊宽度 */
+#donate .modal-content {
+  max-width: 35rem;
+}
+
+.donate-modal .donate-main {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.donate-modal .donate-info {
+  margin-bottom: 1.5rem;
+}
+
+.donate-modal .donate-info p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: var(--font-color);
+}
+
+.donate-modal .donate-qrcode-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+.donate-modal .qrcode-placeholder {
+  width: 200px;
+  height: 200px;
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-color);
+}
+
+.donate-modal .qrcode-placeholder img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+}
+
+.donate-modal .qrcode-box {
+  padding: 1rem;
+  text-align: center;
+}
+
+.donate-modal .qrcode-box p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--font-color-disabled);
+}
+
+.donate-modal .qrcode-box .file-path {
+  font-family: monospace;
+  font-size: 0.8rem;
+  word-break: break-all;
+  padding: 0.5rem;
+  background-color: var(--file-drop-color);
+  border-radius: 4px;
+}
+
+.donate-modal .donate-contact {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.donate-modal .wechat-id {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.donate-modal .wechat-id span {
+  color: #07C160;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.donate-modal .copy-btn {
+  background-color: var(--bg-color);
+  color: var(--font-color);
+  border: 1px solid var(--border-color);
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.donate-modal .copy-btn:hover {
+  background-color: #07C160;
+  color: white;
+  border-color: #07C160;
+}
+
+.donate-modal .copy-btn:active {
+  transform: scale(0.95);
+}
+
+/* 深色主题适配 */
+[data-theme="dark"] .donate-modal .qrcode-placeholder {
+  background-color: #333;
+}
+
+[data-theme="dark"] .donate-modal .qrcode-box .file-path {
+  background-color: #333;
+}
+

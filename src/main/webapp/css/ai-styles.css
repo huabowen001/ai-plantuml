@@ -78,7 +78,7 @@ body::after {
 
 /* 模态框 */
 .modal {
-    display: flex;
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -90,6 +90,11 @@ body::after {
     align-items: center;
     justify-content: center;
     animation: fadeIn 0.3s ease;
+}
+
+.modal[style*="display: block"],
+.modal:not([style*="display: none"]):not([style*="display:none"]) {
+    display: flex !important;
 }
 
 @keyframes fadeIn {
@@ -107,6 +112,12 @@ body::after {
     box-shadow: var(--shadow-glow);
     position: relative;
     animation: slideUp 0.4s ease;
+    margin: auto;
+}
+
+/* 打赏弹窗特殊样式 */
+.donate-modal-ai {
+    max-width: 500px !important;
 }
 
 @keyframes slideUp {
@@ -343,6 +354,53 @@ body::after {
 .btn-large {
     padding: 15px 30px;
     font-size: 16px;
+}
+
+/* AI操作按钮统一样式 */
+.btn-ai {
+    background: linear-gradient(135deg, rgba(0, 245, 255, 0.15), rgba(123, 47, 247, 0.15));
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+}
+
+.btn-ai::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(0, 245, 255, 0.3), transparent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-ai:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-ai:hover {
+    background: linear-gradient(135deg, rgba(0, 245, 255, 0.25), rgba(123, 47, 247, 0.25));
+    border-color: var(--primary-color);
+    box-shadow: 0 0 30px rgba(0, 245, 255, 0.4), 0 0 60px rgba(123, 47, 247, 0.2);
+    transform: translateY(-2px);
+    color: var(--text-light);
+}
+
+.btn-ai:active {
+    transform: translateY(0);
+}
+
+.btn-ai i {
+    filter: drop-shadow(0 0 5px currentColor);
 }
 
 /* 主容器 */
@@ -635,6 +693,9 @@ body::after {
     font-size: 18px;
     color: var(--primary-color);
     text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .panel-header h3 i {
@@ -1589,8 +1650,8 @@ textarea:focus-visible {
     height: 100%;
     overflow: auto;
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
     position: relative;
 }
 

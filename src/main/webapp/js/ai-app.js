@@ -1435,4 +1435,89 @@ function setupImageDrag(container) {
     }, { passive: false });
 }
 
+// ============= 打赏功能 =============
+
+// 配置您的微信号
+const DONATE_WECHAT_ID = "hualinyuezhao"; // 请修改为您的微信号！
+
+// 打开打赏模态框
+function openDonateModal() {
+    const modal = document.getElementById('donateModal');
+    const wechatIdElement = document.getElementById('donateWechatId');
+    
+    if (wechatIdElement) {
+        wechatIdElement.textContent = DONATE_WECHAT_ID;
+    }
+    
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
+// 关闭打赏模态框
+function closeDonateModal() {
+    const modal = document.getElementById('donateModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// 复制微信号
+function copyDonateWechatId() {
+    const wechatId = document.getElementById('donateWechatId').textContent;
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(wechatId).then(() => {
+            showToast('微信号已复制到剪贴板', 'success');
+        }).catch(err => {
+            console.error('复制失败:', err);
+            fallbackCopyText(wechatId);
+        });
+    } else {
+        fallbackCopyText(wechatId);
+    }
+}
+
+// 降级复制方法
+function fallbackCopyText(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.width = "2em";
+    textArea.style.height = "2em";
+    textArea.style.padding = "0";
+    textArea.style.border = "none";
+    textArea.style.outline = "none";
+    textArea.style.boxShadow = "none";
+    textArea.style.background = "transparent";
+    
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showToast('微信号已复制到剪贴板', 'success');
+        } else {
+            showToast('复制失败，请手动复制', 'error');
+        }
+    } catch (err) {
+        console.error('复制失败:', err);
+        showToast('复制失败，请手动复制', 'error');
+    }
+
+    document.body.removeChild(textArea);
+}
+
+// 点击模态框外部关闭
+window.addEventListener('click', (event) => {
+    const modal = document.getElementById('donateModal');
+    if (event.target === modal) {
+        closeDonateModal();
+    }
+});
+
 

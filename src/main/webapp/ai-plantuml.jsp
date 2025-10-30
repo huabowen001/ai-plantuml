@@ -84,6 +84,9 @@
                 </button>
             </div>
             <div class="navbar-user">
+                <button class="nav-btn" onclick="openDonateModal()" title="打赏支持" style="color: #ff6b6b;">
+                    <i class="fas fa-heart"></i> 打赏
+                </button>
                 <span id="userDisplayName">用户</span>
                 <button class="btn-secondary" onclick="handleLogout()">
                     <i class="fas fa-sign-out-alt"></i> 退出
@@ -110,10 +113,10 @@
                             <div class="toolbar-actions">
                                 <label class="checkbox-label">
                                     <input type="checkbox" id="saveHistory" checked>
-                                    <span>保存到历史记录</span>
+                                    <span>保存</span>
                                 </label>
-                                <button class="btn-primary btn-large" onclick="generateDiagram()">
-                                    <i class="fas fa-magic"></i> AI生成图表
+                                <button class="btn-ai" onclick="generateDiagram()">
+                                    <i class="fas fa-magic"></i> AI生成
                                 </button>
                             </div>
                         </div>
@@ -136,7 +139,7 @@
                         <textarea id="plantumlCode" placeholder="PlantUML代码将在这里显示..." spellcheck="false"></textarea>
                         <div class="input-toolbar">
                             <input type="text" id="optimizeInstruction" placeholder="输入优化指令，如：添加颜色、调整布局等" class="title-input">
-                            <button class="btn-secondary" onclick="optimizeDiagram()">
+                            <button class="btn-ai" onclick="optimizeDiagram()">
                                 <i class="fas fa-wand-magic-sparkles"></i> AI优化
                             </button>
                         </div>
@@ -247,6 +250,41 @@
 
     <!-- Toast通知 -->
     <div id="toast" class="toast"></div>
+
+    <!-- 打赏模态框 -->
+    <div id="donateModal" class="modal" style="display: none;">
+        <div class="modal-content donate-modal-ai" style="max-width: 500px;">
+            <span class="close" onclick="closeDonateModal()">&times;</span>
+            <div class="donate-container">
+                <h2 style="text-align: center; color: #ff6b6b;">
+                    <i class="fas fa-heart"></i> 打赏支持
+                </h2>
+                <p style="text-align: center; color: #666; margin: 1rem 0;">
+                    如果您觉得这个工具对您有帮助，欢迎打赏支持！
+                </p>
+                <div style="text-align: center; margin: 2rem 0;">
+                    <div style="width: 200px; height: 200px; border: 2px dashed #ccc; border-radius: 8px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                        <img id="donateQRCode" src="assets/wechat-pay.png" alt="微信收款码" 
+                             style="max-width: 100%; max-height: 100%; border-radius: 8px; display: none;"
+                             onload="this.style.display='block'; this.nextElementSibling.style.display='none';">
+                        <div style="padding: 1rem; text-align: center; color: #999;">
+                            <p style="margin: 0.5rem 0; font-size: 0.9rem;">请上传您的微信收款码到：</p>
+                            <p style="margin: 0.5rem 0; font-size: 0.8rem; font-family: monospace; background: #f5f5f5; padding: 0.5rem; border-radius: 4px;">src/main/webapp/assets/wechat-pay.png</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; padding-top: 1rem; border-top: 1px solid #eee;">
+                    <p style="margin: 0.5rem 0;">
+                        <strong>微信号：</strong>
+                        <span id="donateWechatId" style="color: #07C160; font-weight: bold; font-size: 1.1rem;">请在ai-app.js中设置</span>
+                        <button onclick="copyDonateWechatId()" style="margin-left: 0.5rem; padding: 0.3rem 0.8rem; background: white; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="js/ai-app.js"></script>
 </body>

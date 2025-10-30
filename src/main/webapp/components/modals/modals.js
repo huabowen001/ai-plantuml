@@ -46,6 +46,7 @@ function initModals(view) {
   });
   // init modals
   initSettings();
+  initDonate();
   if (view !== "previewer") {
     initDiagramExport();
     initDiagramImport();

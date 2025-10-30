@@ -36,6 +36,7 @@
     <!-- editor modals -->
     <%@ include file="/components/modals/diagram-import/diagram-import.jsp" %>
     <%@ include file="/components/modals/diagram-export/diagram-export.jsp" %>
+    <%@ include file="/components/modals/donate/donate.jsp" %>
   </div>
 </body>
 </html>

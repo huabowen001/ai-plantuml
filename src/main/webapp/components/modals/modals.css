@@ -3,7 +3,9 @@
 **************/
 
 .modal {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: fixed;
   z-index: 1;
   padding: 5%;
@@ -27,16 +29,14 @@
   animation-name: modal-animatetop;
   animation-duration: 0.4s;
   position: relative;
-  top: 50%;
-  transform: translateY(-50%);
 }
 @-webkit-keyframes modal-animatetop {
-  from { top: -50%; opacity: 0; }
-  to { top: 50%; opacity: 1; }
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 @keyframes modal-animatetop {
-  from { top: -50%; opacity: 0; }
-  to { top: 50%; opacity: 1; }
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 /************* header, main, footer *************/
 .modal .modal-header h2 {
