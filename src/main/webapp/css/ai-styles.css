@@ -1186,47 +1186,35 @@ textarea:focus {
 }
 
 /* 响应式设计 */
-/* 中等屏幕：1200-1600px - 2列布局 */
-@media (max-width: 1600px) {
-    .editor-container {
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-    }
-    
-    .preview-panel {
-        grid-column: span 2;
-    }
-}
-
-/* 小屏幕：900-1200px - 竖向布局 */
-@media (max-width: 1200px) {
+/* 中小屏幕：竖向单列布局，高度拉高 */
+@media (max-width: 1400px) {
     .editor-container {
         grid-template-columns: 1fr;
         height: auto;
-        gap: 20px;
+        gap: 25px;
     }
     
     .editor-panel {
-        min-height: 400px;
+        min-height: 500px;
         height: auto;
     }
     
     .editor-panel .panel-body {
-        min-height: 300px;
+        min-height: 400px;
     }
     
     .preview-panel {
         grid-column: span 1;
-        min-height: 500px;
+        min-height: 600px;
     }
     
     .preview-panel .panel-body {
-        min-height: 400px;
+        min-height: 500px;
     }
 }
 
-/* 移动端：小于768px - 完全竖向布局 + 移动优化 */
-@media (max-width: 768px) {
+/* 移动端：小于900px - 竖向布局 + 移动优化 */
+@media (max-width: 900px) {
     .navbar {
         flex-direction: column;
         gap: 15px;
@@ -1250,19 +1238,23 @@ textarea:focus {
     .editor-container {
         grid-template-columns: 1fr;
         height: auto;
-        gap: 15px;
+        gap: 20px;
     }
     
     .editor-panel {
-        min-height: 350px;
+        min-height: 450px;
         height: auto;
     }
     
     .editor-panel .panel-body {
-        min-height: 250px;
+        min-height: 350px;
     }
     
     .preview-panel {
+        min-height: 500px;
+    }
+    
+    .preview-panel .panel-body {
         min-height: 400px;
     }
     
