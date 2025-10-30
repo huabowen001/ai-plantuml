@@ -1186,9 +1186,11 @@ textarea:focus {
 }
 
 /* 响应式设计 */
-@media (max-width: 1400px) {
+/* 中等屏幕：1200-1600px - 2列布局 */
+@media (max-width: 1600px) {
     .editor-container {
         grid-template-columns: 1fr 1fr;
+        gap: 15px;
     }
     
     .preview-panel {
@@ -1196,25 +1198,106 @@ textarea:focus {
     }
 }
 
+/* 小屏幕：900-1200px - 竖向布局 */
+@media (max-width: 1200px) {
+    .editor-container {
+        grid-template-columns: 1fr;
+        height: auto;
+        gap: 20px;
+    }
+    
+    .editor-panel {
+        min-height: 400px;
+        height: auto;
+    }
+    
+    .editor-panel .panel-body {
+        min-height: 300px;
+    }
+    
+    .preview-panel {
+        grid-column: span 1;
+        min-height: 500px;
+    }
+    
+    .preview-panel .panel-body {
+        min-height: 400px;
+    }
+}
+
+/* 移动端：小于768px - 完全竖向布局 + 移动优化 */
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
         padding: 15px 20px;
     }
     
     .navbar-menu {
         width: 100%;
         justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .navbar-user {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
     }
     
     .editor-container {
         grid-template-columns: 1fr;
         height: auto;
+        gap: 15px;
     }
     
     .editor-panel {
+        min-height: 350px;
+        height: auto;
+    }
+    
+    .editor-panel .panel-body {
+        min-height: 250px;
+    }
+    
+    .preview-panel {
         min-height: 400px;
+    }
+    
+    /* 工具栏竖向排列 */
+    .input-toolbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .toolbar-actions {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .toolbar-actions .btn-ai,
+    .toolbar-actions .checkbox-label {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* 面板操作按钮 */
+    .panel-actions {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .panel-actions .btn-icon {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    
+    /* 面板标题 */
+    .panel-header h3 {
+        font-size: 16px;
     }
     
     .history-grid {

@@ -26,5 +26,6 @@
     "svg.preview.background": "dark-transparent",
     "files.associations": {
         "*.jspf": "html"
-    }
+    },
+    "java.compile.nullAnalysis.mode": "disabled"
 }
